@@ -27,5 +27,6 @@ Improve the user interface and experience.
 Implement a feature to clear the high-score list.
 Allow users to compete in different categories of quizzes.
 
-
+# Deployed Application
+https://bbandhu.github.io/Code-Quiz/
 
