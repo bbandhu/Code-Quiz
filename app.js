@@ -74,18 +74,22 @@ function displayQuestion() {
     choiceButton.textContent = choice;
     choiceItem.appendChild(choiceButton);
 
-    choiceButton.addEventListener('click', () => {
-      if(choice === currentQuestion.answer) {
+    choiceButton.addEventListener('click', (event) => {
+      let selectedChoice = event.target;
+      if(selectedChoice.textContent === currentQuestion.answer) {
         score++; // increase score if the answer is correct
         feedbackDiv.textContent = "Correct!";
       } else {
         timer -= 10; // subtract 10 seconds for incorrect answer
         feedbackDiv.textContent = "Wrong!";
       }
-      currentQuestionIndex++;
-      displayQuestion();
+      // Show feedback for a bit before moving to the next question
+      setTimeout(() => {
+        feedbackDiv.textContent = "";
+        currentQuestionIndex++;
+        displayQuestion();
+      }, 1000);
     });
-
     choicesList.appendChild(choiceItem);
   });
 }
