@@ -35,24 +35,36 @@ let quizData = [
 ];
 
 let currentQuestionIndex = 0;
+let score = 0; // initialize score
+let timer = 60; // initialize timer with 60 seconds
 
 const startButton = document.getElementById("start");
 const questionContainer = document.getElementById("question-container");
 const questionDiv = document.createElement("div");
 const questionHeader = document.createElement("h2");
 const choicesList = document.createElement("ul");
+const timerDisplay = document.getElementById("time");
+const feedbackDiv = document.getElementById("feedback");
 
 questionDiv.appendChild(questionHeader);
 questionDiv.appendChild(choicesList);
 questionContainer.appendChild(questionDiv);
 
-let score = 0; // initialize score
-
 function displayQuestion() {
+  if (currentQuestionIndex >= quizData.length || timer <= 0) {
+    // end the quiz and show score
+    document.getElementById("end-screen").classList.remove("hide");
+    document.getElementById("final-score").textContent = score;
+    console.log(`Quiz finished! Your score: ${score}`);
+    clearInterval(intervalId); // Stop the timer
+    return;
+  }
+  
   let currentQuestion = quizData[currentQuestionIndex];
   questionHeader.textContent = `Question ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
 
   choicesList.innerHTML = ''; // Clear out any previous choices
+  feedbackDiv.innerHTML = ''; // Clear out any previous feedback
 
   currentQuestion.choices.forEach((choice) => {
     const choiceItem = document.createElement("li");
@@ -65,22 +77,42 @@ function displayQuestion() {
     choiceButton.addEventListener('click', () => {
       if(choice === currentQuestion.answer) {
         score++; // increase score if the answer is correct
+        feedbackDiv.textContent = "Correct!";
+      } else {
+        timer -= 10; // subtract 10 seconds for incorrect answer
+        feedbackDiv.textContent = "Wrong!";
       }
       currentQuestionIndex++;
-
-      if (currentQuestionIndex < quizData.length) {
-        displayQuestion();
-      }
-      else {
-        // end the quiz and show score
-        console.log(`Quiz finished! Your score: ${score}`);
-      }
+      displayQuestion();
     });
 
     choicesList.appendChild(choiceItem);
   });
 }
+
+let intervalId;
+
 startButton.addEventListener("click", () => {
   startButton.style.display = 'none'; // Hide start button
+
+  // Start timer
+  intervalId = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = timer;
+    if (timer <= 0) {
+      clearInterval(intervalId); // Stop the timer
+      displayQuestion(); // End quiz when timer reaches 0
+    }
+  }, 1000);
+
   displayQuestion();
+});
+
+document.getElementById("submit").addEventListener('click', (event) => {
+  event.preventDefault(); // Prevent form submission
+  let initials = document.getElementById("initials").value;
+  // Save initials and score to local storage
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+  highscores.push({initials: initials, score: score});
+  localStorage.setItem("highscores", JSON.stringify(highscores));
 });
