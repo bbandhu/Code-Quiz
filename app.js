@@ -36,7 +36,7 @@ let quizData = [
 
 let currentQuestionIndex = 0;
 let score = 0; 
-let timer = 10; 
+let timer = 60; 
 
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
@@ -60,18 +60,18 @@ let intervalId;
 function startQuiz() {
   startButton.style.display = 'none'; 
 
-  // Start timer
   intervalId = setInterval(() => {
     timer--;
     timerDisplay.textContent = timer;
     if (timer <= 0) {
       clearInterval(intervalId); 
+      displayQuestion(); 
     }
   }, 1000);
 
-  // Display first question
   displayQuestion();
 }
+
 function restartQuiz() {
   // Stop existing timer
   clearInterval(intervalId);
@@ -79,19 +79,20 @@ function restartQuiz() {
   // Reset variables
   currentQuestionIndex = 0;
   score = 0; 
-  timer = 10; 
+  timer = 60; 
+
+  // Reset question container
+  questionHeader.textContent = '';
+  choicesList.innerHTML = '';
+  feedbackDiv.innerHTML = '';
 
   // Hide end-screen, high-scores-screen and show start button
   document.getElementById("end-screen").classList.add("hide");
   document.getElementById("high-scores-screen").classList.add("hide");
   startButton.style.display = 'inline';
-
+  
   // Reset timer display
   timerDisplay.textContent = timer;
-
-  // Reset questions display
-  questionHeader.textContent = '';
-  choicesList.innerHTML = '';
 }
 
 function displayQuestion() {
@@ -188,7 +189,7 @@ document.getElementById("submit").addEventListener('click', (event) => {
   goToHighScores();
   // reset score and timer
   score = 0;
-  timer = 10;
+  timer = 60;
   timerDisplay.textContent = timer;
 
 });
