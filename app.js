@@ -112,6 +112,27 @@ startButton.addEventListener("click", () => {
   displayQuestion();
 });
 
+function goToHighScores() {
+  // hide other screens
+  document.getElementById("question-container").classList.add("hide");
+  document.getElementById("end-screen").classList.add("hide");
+  
+  // retrieve high scores from local storage and sort them
+  let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+  highscores.sort((a, b) => b.score - a.score);
+
+  // create and append each score to our high scores list
+  let highScoreList = document.getElementById("high-scores");
+  highScoreList.innerHTML = '';
+  highscores.forEach((scoreObj) => {
+    let li = document.createElement("li");
+    li.textContent = `${scoreObj.initials}: ${scoreObj.score}`;
+    highScoreList.appendChild(li);
+  });
+
+  // show high scores screen
+  document.getElementById("high-scores-screen").classList.remove("hide");
+}
 document.getElementById("submit").addEventListener('click', (event) => {
   event.preventDefault(); // Prevent form submission
   let initials = document.getElementById("initials").value;
@@ -119,4 +140,23 @@ document.getElementById("submit").addEventListener('click', (event) => {
   let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
   highscores.push({initials: initials, score: score});
   localStorage.setItem("highscores", JSON.stringify(highscores));
+
+  // transition to high scores "page"
+  goToHighScores();
 });
+
+document.getElementById("restart").addEventListener('click', () => {
+  // reset quiz and timer variables
+  currentQuestionIndex = 0;
+  score = 0;
+  timer = 60;
+
+  // transition back to start screen
+  document.getElementById("high-scores-screen").classList.add("hide");
+  document.getElementById("start").style.display = 'block';
+  //click on start button to start quiz
+  startButton.click();
+  displayQuestion();
+
+});
+
