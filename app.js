@@ -56,20 +56,35 @@ startButton.addEventListener("click", startQuiz);
 restartButton.addEventListener("click", restartQuiz);
 
 let intervalId;
-
 function startQuiz() {
   startButton.style.display = 'none'; 
 
-  intervalId = setInterval(() => {
-    timer--;
-    timerDisplay.textContent = timer;
-    if (timer <= 0) {
-      clearInterval(intervalId); 
-      displayQuestion(); 
-    }
-  }, 1000);
+  // Start timer
+  if (!intervalId) {
+    intervalId = setInterval(() => {
+      timer--;
+      if (timer <= 0) {
+        timer = 0; // Prevent the timer from going to negative
+        endQuiz(); // If timer reaches zero, we need to end the quiz
+      }
+      timerDisplay.textContent = timer;
+    }, 1000);
+  }
 
+  // Display first question
   displayQuestion();
+}
+
+function endQuiz() {
+  if(intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+
+  // end the quiz and show score
+  document.getElementById("end-screen").classList.remove("hide");
+  document.getElementById("final-score").textContent = score;
+  console.log(`Quiz finished! Your score: ${score}`);
 }
 
 function restartQuiz() {
@@ -86,6 +101,9 @@ function restartQuiz() {
   choicesList.innerHTML = '';
   feedbackDiv.innerHTML = '';
 
+
+ 
+
   // Hide end-screen, high-scores-screen and show start button
   document.getElementById("end-screen").classList.add("hide");
   document.getElementById("high-scores-screen").classList.add("hide");
@@ -93,7 +111,11 @@ function restartQuiz() {
   
   // Reset timer display
   timerDisplay.textContent = timer;
-}
+  location.reload();
+
+ 
+
+  }
 
 function displayQuestion() {
   if (currentQuestionIndex >= quizData.length || timer <= 0) {
