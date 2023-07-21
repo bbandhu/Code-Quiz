@@ -46,28 +46,37 @@ questionDiv.appendChild(questionHeader);
 questionDiv.appendChild(choicesList);
 questionContainer.appendChild(questionDiv);
 
+let score = 0; // initialize score
+
 function displayQuestion() {
   let currentQuestion = quizData[currentQuestionIndex];
   questionHeader.textContent = `Question ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
 
   choicesList.innerHTML = ''; // Clear out any previous choices
+
   currentQuestion.choices.forEach((choice) => {
     const choiceItem = document.createElement("li");
     const choiceButton = document.createElement("button");
-      /*space between each choice */
+    /*space between each choice */
     choiceButton.style.margin = '5px';
     choiceButton.textContent = choice;
     choiceItem.appendChild(choiceButton);
+
     choiceButton.addEventListener('click', () => {
+      if(choice === currentQuestion.answer) {
+        score++; // increase score if the answer is correct
+      }
       currentQuestionIndex++;
+
       if (currentQuestionIndex < quizData.length) {
         displayQuestion();
       }
       else {
-        // end the quiz or do something else
-        console.log("Quiz finished!");
+        // end the quiz and show score
+        console.log(`Quiz finished! Your score: ${score}`);
       }
     });
+
     choicesList.appendChild(choiceItem);
   });
 }
