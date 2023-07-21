@@ -54,6 +54,8 @@ function displayQuestion() {
   currentQuestion.choices.forEach((choice) => {
     const choiceItem = document.createElement("li");
     const choiceButton = document.createElement("button");
+      /*space between each choice */
+    choiceButton.style.margin = '5px';
     choiceButton.textContent = choice;
     choiceItem.appendChild(choiceButton);
     choiceButton.addEventListener('click', () => {
@@ -69,7 +71,6 @@ function displayQuestion() {
     choicesList.appendChild(choiceItem);
   });
 }
-
 startButton.addEventListener("click", () => {
   startButton.style.display = 'none'; // Hide start button
   displayQuestion();
