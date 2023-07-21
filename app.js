@@ -35,10 +35,12 @@ let quizData = [
 ];
 
 let currentQuestionIndex = 0;
-let score = 0; // initialize score
-let timer = 60; // initialize timer with 60 seconds
+let score = 0; 
+let timer = 10; 
 
 const startButton = document.getElementById("start");
+const restartButton = document.getElementById("restart");
+
 const questionContainer = document.getElementById("question-container");
 const questionDiv = document.createElement("div");
 const questionHeader = document.createElement("h2");
@@ -49,6 +51,48 @@ const feedbackDiv = document.getElementById("feedback");
 questionDiv.appendChild(questionHeader);
 questionDiv.appendChild(choicesList);
 questionContainer.appendChild(questionDiv);
+
+startButton.addEventListener("click", startQuiz);
+restartButton.addEventListener("click", restartQuiz);
+
+let intervalId;
+
+function startQuiz() {
+  startButton.style.display = 'none'; 
+
+  // Start timer
+  intervalId = setInterval(() => {
+    timer--;
+    timerDisplay.textContent = timer;
+    if (timer <= 0) {
+      clearInterval(intervalId); 
+    }
+  }, 1000);
+
+  // Display first question
+  displayQuestion();
+}
+function restartQuiz() {
+  // Stop existing timer
+  clearInterval(intervalId);
+
+  // Reset variables
+  currentQuestionIndex = 0;
+  score = 0; 
+  timer = 10; 
+
+  // Hide end-screen, high-scores-screen and show start button
+  document.getElementById("end-screen").classList.add("hide");
+  document.getElementById("high-scores-screen").classList.add("hide");
+  startButton.style.display = 'inline';
+
+  // Reset timer display
+  timerDisplay.textContent = timer;
+
+  // Reset questions display
+  questionHeader.textContent = '';
+  choicesList.innerHTML = '';
+}
 
 function displayQuestion() {
   if (currentQuestionIndex >= quizData.length || timer <= 0) {
@@ -94,7 +138,6 @@ function displayQuestion() {
   });
 }
 
-let intervalId;
 
 startButton.addEventListener("click", () => {
   startButton.style.display = 'none'; // Hide start button
@@ -143,20 +186,14 @@ document.getElementById("submit").addEventListener('click', (event) => {
 
   // transition to high scores "page"
   goToHighScores();
-});
-
-document.getElementById("restart").addEventListener('click', () => {
-  // reset quiz and timer variables
-  currentQuestionIndex = 0;
+  // reset score and timer
   score = 0;
-  timer = 60;
-
-  // transition back to start screen
-  document.getElementById("high-scores-screen").classList.add("hide");
-  document.getElementById("start").style.display = 'block';
-  //click on start button to start quiz
-  startButton.click();
-  displayQuestion();
+  timer = 10;
+  timerDisplay.textContent = timer;
 
 });
+
+
+
+
 
